@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Conteo & Resumen de Mesa - Personero Comas</title>
+    <style>
+        * { box-sizing: border-box; touch-action: manipulation; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 10px; color: #1c1e21; }
+        h1 { text-align: center; font-size: 1.2rem; margin: 5px 0 2px 0; color: #1f3a60; }
+        .subtitle { text-align: center; font-size: 0.8rem; color: #555; margin-bottom: 10px; }
+        
+        /* Navigation Tabs */
+        .tabs { display: flex; gap: 4px; margin-bottom: 12px; background: #e0e4ec; padding: 4px; border-radius: 10px; }
+        .tab-btn { flex: 1; padding: 10px 2px; font-size: 0.75rem; font-weight: bold; border: none; background: transparent; color: #4b4f56; border-radius: 7px; cursor: pointer; text-align: center; }
+        .tab-btn.active { background: #1877f2; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
+
+        /* Panels */
+        .panel { display: none; margin-bottom: 80px; }
+        .panel.active { display: block; }
+
+        /* Cards & Forms */
+        .box { background: white; border-radius: 10px; padding: 14px; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); border: 1px solid #e1e4e8; }
+        .box-title { font-size: 0.95rem; font-weight: bold; color: #1f3a60; margin-bottom: 10px; border-bottom: 2px solid #e1e4e8; padding-bottom: 4px; }
+        
+        .form-group { margin-bottom: 10px; }
+        .form-group label { display: block; font-size: 0.8rem; font-weight: 600; color: #444; margin-bottom: 4px; }
+        .form-group input { width: 100%; padding: 10px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px; font-weight: bold; }
+
+        /* Validation Status Banner */
+        .val-badge { padding: 10px; border-radius: 8px; font-weight: bold; text-align: center; font-size: 0.85rem; margin-top: 8px; }
+        .val-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .val-danger { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .val-warning { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+
+        /* Counter Grid */
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .card { background: white; border-radius: 12px; padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.08); border: 1px solid #e0e0e0; position: relative; }
+        .card:active { transform: scale(0.97); background-color: #e7f3ff; }
+        .logo-placeholder { width: 44px; height: 44px; border-radius: 50%; background-color: #1f3a60; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.85rem; margin-bottom: 4px; overflow: hidden; }
+        .logo-placeholder img { width: 100%; height: 100%; object-fit: cover; }
+        .party-name { font-size: 0.8rem; font-weight: bold; text-align: center; min-height: 28px; display: flex; align-items: center; justify-content: center; line-height: 1.1; margin-bottom: 4px; color: #222; }
+        .counter { font-size: 1.7rem; font-weight: 800; color: #1877f2; margin-bottom: 6px; }
+        .btn-add { width: 100%; padding: 8px 0; background: #2e7d32; color: white; border: none; border-radius: 6px; font-weight: bold; font-size: 0.85rem; cursor: pointer; }
+        .btn-sub { position: absolute; top: 6px; right: 6px; width: 26px; height: 26px; background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; border-radius: 50%; font-size: 0.9rem; font-weight: bold; display: flex; align-items: center; justify-content: center; }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 0.85rem; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #1f3a60; color: white; text-align: center; font-size: 0.8rem; }
+        td.num { text-align: right; font-weight: bold; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        .winner-row { background-color: #d4edda !important; font-weight: bold; }
+
+        /* Footer */
+        .footer-summary { position: fixed; bottom: 0; left: 0; right: 0; background: #1f3a60; color: white; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 -2px 8px rgba(0,0,0,0.2); z-index: 99; }
+        .total-text { font-size: 0.9rem; font-weight: bold; }
+        .status-dot { height: 10px; width: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+        .dot-green { background-color: #28a745; }
+        .dot-red { background-color: #dc3545; }
+    </style>
+</head>
+<body>
+
+    <h1>Conteo & Resumen de Mesa</h1>
+    <div class="subtitle">Comas - Lima | Control de Personero</div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('p-control')">1. Asistencia</button>
+        <button class="tab-btn" onclick="switchTab('p-comas')">2. Distrital</button>
+        <button class="tab-btn" onclick="switchTab('p-lima')">3. Provincial</button>
+        <button class="tab-btn" onclick="switchTab('p-resumen')">4. Ganadores</button>
+    </div>
+
+    <!-- PANEL 1: CONTROL DE ASISTENCIA Y VALIDACIÓN -->
+    <div id="p-control" class="panel active">
+        <div class="box">
+            <div class="box-title">Datos de la Mesa</div>
+            <div class="form-group">
+                <label>Número de Mesa:</label>
+                <input type="number" id="num-mesa" placeholder="Ej: 034125" oninput="updateAll()">
+            </div>
+            <div class="form-group">
+                <label>Total Electores Hábiles (en Padrón):</label>
+                <input type="number" id="habiles" placeholder="Ej: 300" oninput="updateAll()">
+            </div>
+            <div class="form-group">
+                <label>Total Ciudadanos que VOTARON (Firmas/Huellas):</label>
+                <input type="number" id="votaron" placeholder="Ej: 240" oninput="updateAll()">
+            </div>
+            <div class="form-group">
+                <label>Ciudadanos NO VOTARON (Ausentes):</label>
+                <input type="number" id="novotaron" placeholder="Calculado aut." readonly style="background:#eee;">
+            </div>
+
+            <div id="val-asistencia" class="val-badge val-warning">Ingrese datos de asistencia para validar.</div>
+        </div>
+
+        <div class="box">
+            <div class="box-title">Estado de Validación por Elección</div>
+            <div id="val-comas-summary" class="val-badge val-warning">Distrital: Pendiente</div>
+            <div id="val-lima-summary" class="val-badge val-warning" style="margin-top:6px;">Provincial: Pendiente</div>
+        </div>
+    </div>
+
+    <!-- PANEL 2: CONTEO DISTRITAL (COMAS) -->
+    <div id="p-comas" class="panel">
+        <div id="val-comas-banner" class="val-badge val-warning" style="margin-bottom:10px;">Compruebe el total de votos.</div>
+        <div id="grid-comas" class="grid"></div>
+    </div>
+
+    <!-- PANEL 3: CONTEO PROVINCIAL (LIMA) -->
+    <div id="p-lima" class="panel">
+        <div id="val-lima-banner" class="val-badge val-warning" style="margin-bottom:10px;">Compruebe el total de votos.</div>
+        <div id="grid-lima" class="grid"></div>
+    </div>
+
+    <!-- PANEL 4: TABLA FINAL DE GANADORES Y RESUMEN -->
+    <div id="p-resumen" class="panel">
+        <div class="box">
+            <div class="box-title">🏆 GANADOR DISTRITAL (COMAS)</div>
+            <div id="winner-comas-card" style="font-size:1.1rem; font-weight:bold; color:#1f3a60; text-align:center; padding:8px; background:#e7f3ff; border-radius:8px; margin-bottom:8px;">
+                Aún no hay conteo
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Organización Política</th>
+                        <th>Votos</th>
+                        <th>%</th>
+                    </tr>
+                </thead>
+                <tbody id="tbl-comas-body"></tbody>
+            </table>
+        </div>
+
+        <div class="box">
+            <div class="box-title">🏆 GANADOR PROVINCIAL (LIMA)</div>
+            <div id="winner-lima-card" style="font-size:1.1rem; font-weight:bold; color:#1f3a60; text-align:center; padding:8px; background:#e7f3ff; border-radius:8px; margin-bottom:8px;">
+                Aún no hay conteo
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Organización Política</th>
+                        <th>Votos</th>
+                        <th>%</th>
+                    </tr>
+                </thead>
+                <tbody id="tbl-lima-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- FOOTER FIX -->
+    <div class="footer-summary">
+        <div>
+            <span id="dot-status" class="status-dot dot-red"></span>
+            <span class="total-text" id="footer-info">Dist: 0 / Prov: 0</span>
+        </div>
+        <button style="background:#c62828; color:white; border:none; padding:6px 10px; border-radius:6px; font-weight:bold; font-size:0.75rem;" onclick="resetAll()">Reiniciar</button>
+    </div>
+
+    <script>
+        // NOTA: En la propiedad 'logo' puedes poner el texto Base64 de la imagen: 'data:image/png;base64,iVBORw0KGgo...'
+        const partidosComas = [
+            { id: 'c1', name: 'Perú Moderno', initials: 'PM', logo: '' },
+            { id: 'c2', name: 'Avanza País', initials: 'AP', logo: '' },
+            { id: 'c3', name: 'Podemos Perú', initials: 'PP', logo: '' },
+            { id: 'c4', name: 'Renovación Popular', initials: 'RP', logo: '' },
+            { id: 'c5', name: 'Alianza para el Progreso', initials: 'APP', logo: '' },
+            { id: 'c6', name: 'Somos Perú', initials: 'SP', logo: '' },
+            { id: 'c7', name: 'Fuerza Popular', initials: 'FP', logo: '' },
+            { id: 'c8', name: 'Acción Popular', initials: 'APol', logo: '' },
+            { id: 'c9', name: 'Partido Morado', initials: 'PMo', logo: '' },
+            { id: 'c10', name: 'PPC', initials: 'PPC', logo: '' },
+            { id: 'c11', name: 'Perú Libre', initials: 'PL', logo: '' },
+            { id: 'c12', name: 'Juntos por el Perú', initials: 'JP', logo: '' },
+            { id: 'c13', name: 'Frente Esperanza', initials: 'FE', logo: '' },
+            { id: 'c14', name: 'Primero La Gente', initials: 'PLG', logo: '' },
+            { id: 'c15', name: 'Progresemos', initials: 'PRO', logo: '' },
+            { id: 'c16', name: 'Ahora Nación', initials: 'AN', logo: '' },
+            { id: 'c17', name: 'VOTOS EN BLANCO', initials: 'VB', logo: '' },
+            { id: 'c18', name: 'VOTOS NULOS', initials: 'VN', logo: '' },
+            { id: 'c19', name: 'VOTOS IMPUGNADOS', initials: 'VI', logo: '' }
+        ];
+
+        const partidosLima = [
+            { id: 'l1', name: 'Podemos Perú', initials: 'PP', logo: '' },
+            { id: 'l2', name: 'Renovación Popular', initials: 'RP', logo: '' },
+            { id: 'l3', name: 'Somos Perú', initials: 'SP', logo: '' },
+            { id: 'l4', name: 'Alianza para el Progreso', initials: 'APP', logo: '' },
+            { id: 'l5', name: 'Fuerza Popular', initials: 'FP', logo: '' },
+            { id: 'l6', name: 'Avanza País', initials: 'AP', logo: '' },
+            { id: 'l7', name: 'Acción Popular', initials: 'APol', logo: '' },
+            { id: 'l8', name: 'Partido Morado', initials: 'PMo', logo: '' },
+            { id: 'l9', name: 'PPC', initials: 'PPC', logo: '' },
+            { id: 'l10', name: 'Perú Libre', initials: 'PL', logo: '' },
+            { id: 'l11', name: 'Juntos por el Perú', initials: 'JP', logo: '' },
+            { id: 'l12', name: 'Frente Esperanza', initials: 'FE', logo: '' },
+            { id: 'l13', name: 'Primero La Gente', initials: 'PLG', logo: '' },
+            { id: 'l14', name: 'Progresemos', initials: 'PRO', logo: '' },
+            { id: 'l15', name: 'Ahora Nación', initials: 'AN', logo: '' },
+            { id: 'l16', name: 'VOTOS EN BLANCO', initials: 'VB', logo: '' },
+            { id: 'l17', name: 'VOTOS NULOS', initials: 'VN', logo: '' },
+            { id: 'l18', name: 'VOTOS IMPUGNADOS', initials: 'VI', logo: '' }
+        ];
+
+        let votesComas = {};
+        partidosComas.forEach(p => votesComas[p.id] = 0);
+
+        let votesLima = {};
+        partidosLima.forEach(p => votesLima[p.id] = 0);
+
+        function renderGrids() {
+            // Comas
+            const gc = document.getElementById('grid-comas');
+            gc.innerHTML = '';
+            partidosComas.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.onclick = () => { votesComas[p.id]++; updateAll(); renderGrids(); };
+                
+                const logoContent = p.logo ? `<img src="${p.logo}" alt="${p.initials}">` : p.initials;
+
+                card.innerHTML = `
+                    <button class="btn-sub" onclick="event.stopPropagation(); if(votesComas['${p.id}']>0){votesComas['${p.id}']--; updateAll(); renderGrids();}">-</button>
+                    <div class="logo-placeholder">${logoContent}</div>
+                    <div class="party-name">${p.name}</div>
+                    <div class="counter">${votesComas[p.id]}</div>
+                    <button class="btn-add">+1 Voto</button>
+                `;
+                gc.appendChild(card);
+            });
+
+            // Lima
+            const gl = document.getElementById('grid-lima');
+            gl.innerHTML = '';
+            partidosLima.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.onclick = () => { votesLima[p.id]++; updateAll(); renderGrids(); };
+                
+                const logoContent = p.logo ? `<img src="${p.logo}" alt="${p.initials}">` : p.initials;
+
+                card.innerHTML = `
+                    <button class="btn-sub" onclick="event.stopPropagation(); if(votesLima['${p.id}']>0){votesLima['${p.id}']--; updateAll(); renderGrids();}">-</button>
+                    <div class="logo-placeholder">${logoContent}</div>
+                    <div class="party-name">${p.name}</div>
+                    <div class="counter">${votesLima[p.id]}</div>
+                    <button class="btn-add">+1 Voto</button>
+                `;
+                gl.appendChild(card);
+            });
+        }
+
+        function updateAll() {
+            const habiles = parseInt(document.getElementById('habiles').value) || 0;
+            const votaron = parseInt(document.getElementById('votaron').value) || 0;
+            
+            let novotaron = 0;
+            if (habiles > 0) {
+                novotaron = Math.max(0, habiles - votaron);
+                document.getElementById('novotaron').value = novotaron;
+            } else {
+                document.getElementById('novotaron').value = '';
+            }
+
+            const valAsist = document.getElementById('val-asistencia');
+            if (habiles > 0 && votaron > 0) {
+                if (votaron > habiles) {
+                    valAsist.className = 'val-badge val-danger';
+                    valAsist.innerHTML = '❌ ERROR: La cantidad de votantes es mayor que los electores hábiles.';
+                } else {
+                    valAsist.className = 'val-badge val-success';
+                    valAsist.innerHTML = `✅ Asistencia OK: ${votaron} Votaron | ${novotaron} No votaron (${((votaron/habiles)*100).toFixed(1)}% Participación)`;
+                }
+            } else {
+                valAsist.className = 'val-badge val-warning';
+                valAsist.innerHTML = 'Ingrese electores hábiles y ciudadanos que votaron.';
+            }
+
+            const totalComas = Object.values(votesComas).reduce((a, b) => a + b, 0);
+            const totalLima = Object.values(votesLima).reduce((a, b) => a + b, 0);
+
+            const valComasSum = document.getElementById('val-comas-summary');
+            const valComasBan = document.getElementById('val-comas-banner');
+            if (votaron > 0) {
+                const diffC = totalComas - votaron;
+                if (diffC === 0) {
+                    const msg = `✅ DISTRITAL CUADRADO: ${totalComas} votos coinciden exactamente con los ${votaron} votantes.`;
+                    valComasSum.className = 'val-badge val-success';
+                    valComasSum.innerText = msg;
+                    valComasBan.className = 'val-badge val-success';
+                    valComasBan.innerText = msg;
+                } else if (diffC < 0) {
+                    const msg = `⚠️ DESCUADRE DISTRITAL: Faltan contar ${Math.abs(diffC)} votos (${totalComas} / ${votaron}).`;
+                    valComasSum.className = 'val-badge val-danger';
+                    valComasSum.innerText = msg;
+                    valComasBan.className = 'val-badge val-danger';
+                    valComasBan.innerText = msg;
+                } else {
+                    const msg = `⚠️ DESCUADRE DISTRITAL: Sobran ${diffC} votos en ánfora (${totalComas} / ${votaron}).`;
+                    valComasSum.className = 'val-badge val-danger';
+                    valComasSum.innerText = msg;
+                    valComasBan.className = 'val-badge val-danger';
+                    valComasBan.innerText = msg;
+                }
+            }
+
+            const valLimaSum = document.getElementById('val-lima-summary');
+            const valLimaBan = document.getElementById('val-lima-banner');
+            if (votaron > 0) {
+                const diffL = totalLima - votaron;
+                if (diffL === 0) {
+                    const msg = `✅ PROVINCIAL CUADRADO: ${totalLima} votos coinciden exactamente con los ${votaron} votantes.`;
+                    valLimaSum.className = 'val-badge val-success';
+                    valLimaSum.innerText = msg;
+                    valLimaBan.className = 'val-badge val-success';
+                    valLimaBan.innerText = msg;
+                } else if (diffL < 0) {
+                    const msg = `⚠️ DESCUADRE PROVINCIAL: Faltan contar ${Math.abs(diffL)} votos (${totalLima} / ${votaron}).`;
+                    valLimaSum.className = 'val-badge val-danger';
+                    valLimaSum.innerText = msg;
+                    valLimaBan.className = 'val-badge val-danger';
+                    valLimaBan.innerText = msg;
+                } else {
+                    const msg = `⚠️ DESCUADRE PROVINCIAL: Sobran ${diffL} votos en ánfora (${totalLima} / ${votaron}).`;
+                    valLimaSum.className = 'val-badge val-danger';
+                    valLimaSum.innerText = msg;
+                    valLimaBan.className = 'val-badge val-danger';
+                    valLimaBan.innerText = msg;
+                }
+            }
+
+            document.getElementById('footer-info').innerText = `Dist: ${totalComas}/${votaron} | Prov: ${totalLima}/${votaron}`;
+            const dot = document.getElementById('dot-status');
+            if (votaron > 0 && totalComas === votaron && totalLima === votaron) {
+                dot.className = 'status-dot dot-green';
+            } else {
+                dot.className = 'status-dot dot-red';
+            }
+
+            renderTables(totalComas, totalLima);
+        }
+
+        function renderTables(totalC, totalL) {
+            const listC = partidosComas.map(p => ({ name: p.name, votes: votesComas[p.id] }))
+                                      .sort((a,b) => b.votes - a.votes);
+            const tbodyC = document.getElementById('tbl-comas-body');
+            tbodyC.innerHTML = '';
+            listC.forEach((item, idx) => {
+                const pct = totalC > 0 ? ((item.votes / totalC) * 100).toFixed(1) : '0.0';
+                const row = document.createElement('tr');
+                if (idx === 0 && item.votes > 0) row.className = 'winner-row';
+                row.innerHTML = `<td>${item.name}</td><td class="num">${item.votes}</td><td class="num">${pct}%</td>`;
+                tbodyC.appendChild(row);
+            });
+
+            const winC = listC[0];
+            const winCCard = document.getElementById('winner-comas-card');
+            if (totalC > 0 && winC.votes > 0) {
+                const pctWin = ((winC.votes / totalC) * 100).toFixed(1);
+                winCCard.innerHTML = `🥇 ${winC.name}<br><span style="font-size:0.9rem; font-weight:normal;">${winC.votes} Votos (${pctWin}%)</span>`;
+            } else {
+                winCCard.innerText = 'Aún no se registran votos';
+            }
+
+            const listL = partidosLima.map(p => ({ name: p.name, votes: votesLima[p.id] }))
+                                     .sort((a,b) => b.votes - a.votes);
+            const tbodyL = document.getElementById('tbl-lima-body');
+            tbodyL.innerHTML = '';
+            listL.forEach((item, idx) => {
+                const pct = totalL > 0 ? ((item.votes / totalL) * 100).toFixed(1) : '0.0';
+                const row = document.createElement('tr');
+                if (idx === 0 && item.votes > 0) row.className = 'winner-row';
+                row.innerHTML = `<td>${item.name}</td><td class="num">${item.votes}</td><td class="num">${pct}%</td>`;
+                tbodyL.appendChild(row);
+            });
+
+            const winL = listL[0];
+            const winLCard = document.getElementById('winner-lima-card');
+            if (totalL > 0 && winL.votes > 0) {
+                const pctWin = ((winL.votes / totalL) * 100).toFixed(1);
+                winLCard.innerHTML = `🥇 ${winL.name}<br><span style="font-size:0.9rem; font-weight:normal;">${winL.votes} Votos (${pctWin}%)</span>`;
+            } else {
+                winLCard.innerText = 'Aún no se registran votos';
+            }
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+            updateAll();
+        }
+
+        function resetAll() {
+            if (confirm("¿Estás seguro de reiniciar los datos de asistencia y el conteo de la mesa?")) {
+                document.getElementById('num-mesa').value = '';
+                document.getElementById('habiles').value = '';
+                document.getElementById('votaron').value = '';
+                partidosComas.forEach(p => votesComas[p.id] = 0);
+                partidosLima.forEach(p => votesLima[p.id] = 0);
+                renderGrids();
+                updateAll();
+            }
+        }
+
+        renderGrids();
+        updateAll();
+    </script>
+</body>
+</html>
