@@ -163,59 +163,316 @@
 
     <script>
         // NOTA: En la propiedad 'logo' puedes poner el texto Base64 de la imagen: 'data:image/png;base64,iVBORw0KGgo...'
-        const partidosComas = [
-            { id: 'c1', name: 'Perú Moderno', initials: 'PM', logo: '' },
-            { id: 'c2', name: 'Avanza País', initials: 'AP', logo: '' },
-            { id: 'c3', name: 'Podemos Perú', initials: 'PP', logo: '' },
-            { id: 'c4', name: 'Renovación Popular', initials: 'RP', logo: '' },
-            { id: 'c5', name: 'Alianza para el Progreso', initials: 'APP', logo: '' },
-            { id: 'c6', name: 'Somos Perú', initials: 'SP', logo: '' },
-            { id: 'c7', name: 'Fuerza Popular', initials: 'FP', logo: '' },
-            { id: 'c8', name: 'Acción Popular', initials: 'APol', logo: '' },
-            { id: 'c9', name: 'Partido Morado', initials: 'PMo', logo: '' },
-            { id: 'c10', name: 'PPC', initials: 'PPC', logo: '' },
-            { id: 'c11', name: 'Perú Libre', initials: 'PL', logo: '' },
-            { id: 'c12', name: 'Juntos por el Perú', initials: 'JP', logo: '' },
-            { id: 'c13', name: 'Frente Esperanza', initials: 'FE', logo: '' },
-            { id: 'c14', name: 'Primero La Gente', initials: 'PLG', logo: '' },
-            { id: 'c15', name: 'Progresemos', initials: 'PRO', logo: '' },
-            { id: 'c16', name: 'Ahora Nación', initials: 'AN', logo: '' },
-            { id: 'c17', name: 'VOTOS EN BLANCO', initials: 'VB', logo: '' },
-            { id: 'c18', name: 'VOTOS NULOS', initials: 'VN', logo: '' },
-            { id: 'c19', name: 'VOTOS IMPUGNADOS', initials: 'VI', logo: '' }
-        ];
+        
 
-        const partidosLima = [
-    { id: 'l1', name: 'ALIANZA PARA EL PROGRESO', initials: 'APP', logo: '' },
-    { id: 'l2', name: 'PARTIDO POLITICO NACIONAL PERU LIBRE', initials: 'PL', logo: '' },
-    { id: 'l3', name: 'JUNTOS POR EL PERU', initials: 'JP', logo: '' },
-    { id: 'l4', name: 'PARTIDO FRENTE DE LA ESPERANZA 2021', initials: 'FE', logo: '' },
-    { id: 'l5', name: 'ACCION POPULAR', initials: 'APol', logo: '' },
-    { id: 'l6', name: 'PARTIDO CIVICO OBRAS', initials: 'PCO', logo: '' },
-    { id: 'l7', name: 'COALICION TRANSFORMADORA TIERRA VERDE', initials: 'TV', logo: '' },
-    { id: 'l8', name: 'RENOVACION POPULAR PERU', initials: 'RP', logo: '' },
-    { id: 'l9', name: 'PARTIDO DEMOCRATA VERDE', initials: 'PDV', logo: '' },
-    { id: 'l10', name: 'PARTIDO POPULAR CRISTIANO - PPC', initials: 'PPC', logo: '' },
-    { id: 'l11', name: 'VISION PERU', initials: 'VP', logo: '' },
-    { id: 'l12', name: 'FRENTE POPULAR AGRICOLA FIA DEL PERU', initials: 'FREPAP', logo: '' },
-    { id: 'l13', name: 'FUERZA POPULAR', initials: 'FP', logo: '' },
-    { id: 'l14', name: 'AVANZA PAIS - PARTIDO DE INTEGRACION SOCIAL', initials: 'AP', logo: '' },
-    { id: 'l15', name: 'PARTIDO PATRIOTICO DEL PERU', initials: 'PPP', logo: '' },
-    { id: 'l16', name: 'FUERZA CIUDADANA', initials: 'FC', logo: '' },
-    { id: 'l17', name: 'BATALLA PERU', initials: 'BP', logo: '' },
-    { id: 'l18', name: 'AHORA NACION - AN', initials: 'AN', logo: '' },
-    { id: 'l19', name: 'PROGRESEMOS', initials: 'PRO', logo: '' },
-    { id: 'l20', name: 'PARTIDO DEL BUEN GOBIERNO', initials: 'PBG', logo: '' },
-    { id: 'l21', name: 'PARTIDO POLITICO PUEBLO CONSCIENTE', initials: 'PPCn', logo: '' },
-    { id: 'l22', name: 'PARTIDO DEMOCRATICO SOMOS PERU', initials: 'SP', logo: '' },
-    { id: 'l23', name: 'PARTIDO APRISTA PERUANO', initials: 'APRA', logo: '' },
-    { id: 'l24', name: 'PODEMOS PERU', initials: 'PP', logo: '' },
-    { id: 'l25', name: 'ALIANZA ELECTORAL VENCEREMOS', initials: 'AEV', logo: '' },
-    { id: 'l26', name: 'PARTIDO MORADO', initials: 'PMo', logo: '' },
-    { id: 'l27', name: 'VOTOS EN BLANCO', initials: 'VB', logo: '' },
-    { id: 'l28', name: 'VOTOS NULOS', initials: 'VN', logo: '' },
-    { id: 'l29', name: 'VOTOS IMPUGNADOS', initials: 'VI', logo: '' }
-];
+   
+    // ============================================================
+    // PARTIDOS / ORGANIZACIONES POLÍTICAS - DISTRITO DE COMAS
+    // Según la cédula mostrada
+    // ============================================================
+
+    const partidosComas = [
+        {
+            id: 'c1',
+            name: 'ALIANZA PARA EL PROGRESO',
+            initials: 'APP',
+            logo: ''
+        },
+        {
+            id: 'c2',
+            name: 'ACCIÓN POPULAR',
+            initials: 'AP',
+            logo: ''
+        },
+        {
+            id: 'c3',
+            name: 'PARTIDO CÍVICO OBRAS',
+            initials: 'PCO',
+            logo: ''
+        },
+        {
+            id: 'c4',
+            name: 'RENOVACIÓN POPULAR PERÚ',
+            initials: 'RP',
+            logo: ''
+        },
+        {
+            id: 'c5',
+            name: 'PARTIDO POPULAR CRISTIANO - PPC',
+            initials: 'PPC',
+            logo: ''
+        },
+        {
+            id: 'c6',
+            name: 'FUERZA POPULAR',
+            initials: 'FP',
+            logo: ''
+        },
+        {
+            id: 'c7',
+            name: 'AVANZA PAÍS - PARTIDO DE INTEGRACIÓN SOCIAL',
+            initials: 'AP',
+            logo: ''
+        },
+        {
+            id: 'c8',
+            name: 'PARTIDO DE LOS TRABAJADORES Y EMPRENDEDORES PTE PERÚ - COMUNIDAD POLÍTICA INKA PERÚ',
+            initials: 'PTE',
+            logo: ''
+        },
+        {
+            id: 'c9',
+            name: 'PARTIDO POLÍTICO PERÚ PRIMERO',
+            initials: 'PP1',
+            logo: ''
+        },
+        {
+            id: 'c10',
+            name: 'AHORA NACIÓN - AN',
+            initials: 'AN',
+            logo: ''
+        },
+        {
+            id: 'c11',
+            name: 'PROGRESEMOS',
+            initials: 'PRO',
+            logo: ''
+        },
+        {
+            id: 'c12',
+            name: 'PARTIDO POLÍTICO PERÚ ACCIÓN',
+            initials: 'PA',
+            logo: ''
+        },
+        {
+            id: 'c13',
+            name: 'PARTIDO DEMOCRÁTICO SOMOS PERÚ',
+            initials: 'SP',
+            logo: ''
+        },
+        {
+            id: 'c14',
+            name: 'PODEMOS PERÚ',
+            initials: 'PP',
+            logo: ''
+        },
+        {
+            id: 'c15',
+            name: 'PARTIDO MORADO',
+            initials: 'PM',
+            logo: ''
+        },
+        {
+            id: 'c16',
+            name: 'PERÚ MODERNO',
+            initials: 'PMO',
+            logo: ''
+        },
+
+        // Categorías de votos
+        {
+            id: 'c17',
+            name: 'VOTOS EN BLANCO',
+            initials: 'VB',
+            logo: ''
+        },
+        {
+            id: 'c18',
+            name: 'VOTOS NULOS',
+            initials: 'VN',
+            logo: ''
+        },
+        {
+            id: 'c19',
+            name: 'VOTOS IMPUGNADOS',
+            initials: 'VI',
+            logo: ''
+        }
+    ];
+
+
+    // ============================================================
+    // ORGANIZACIONES POLÍTICAS - PROVINCIA DE LIMA
+    // ============================================================
+
+    const partidosLima = [
+        {
+            id: 'l1',
+            name: 'ALIANZA PARA EL PROGRESO',
+            initials: 'APP',
+            logo: ''
+        },
+        {
+            id: 'l2',
+            name: 'PARTIDO POLÍTICO NACIONAL PERÚ LIBRE',
+            initials: 'PL',
+            logo: ''
+        },
+        {
+            id: 'l3',
+            name: 'JUNTOS POR EL PERÚ',
+            initials: 'JP',
+            logo: ''
+        },
+        {
+            id: 'l4',
+            name: 'PARTIDO FRENTE DE LA ESPERANZA 2021',
+            initials: 'FE',
+            logo: ''
+        },
+        {
+            id: 'l5',
+            name: 'ACCIÓN POPULAR',
+            initials: 'AP',
+            logo: ''
+        },
+        {
+            id: 'l6',
+            name: 'PARTIDO CÍVICO OBRAS',
+            initials: 'PCO',
+            logo: ''
+        },
+        {
+            id: 'l7',
+            name: 'COALICIÓN TRANSFORMADORA TIERRA VERDE',
+            initials: 'TV',
+            logo: ''
+        },
+        {
+            id: 'l8',
+            name: 'RENOVACIÓN POPULAR PERÚ',
+            initials: 'RP',
+            logo: ''
+        },
+        {
+            id: 'l9',
+            name: 'PARTIDO DEMÓCRATA VERDE',
+            initials: 'PDV',
+            logo: ''
+        },
+        {
+            id: 'l10',
+            name: 'PARTIDO POPULAR CRISTIANO - PPC',
+            initials: 'PPC',
+            logo: ''
+        },
+        {
+            id: 'l11',
+            name: 'VISIÓN PERÚ',
+            initials: 'VP',
+            logo: ''
+        },
+        {
+            id: 'l12',
+            name: 'FRENTE POPULAR AGRÍCOLA FIA DEL PERÚ',
+            initials: 'FREPAP',
+            logo: ''
+        },
+        {
+            id: 'l13',
+            name: 'FUERZA POPULAR',
+            initials: 'FP',
+            logo: ''
+        },
+        {
+            id: 'l14',
+            name: 'AVANZA PAÍS - PARTIDO DE INTEGRACIÓN SOCIAL',
+            initials: 'AP',
+            logo: ''
+        },
+        {
+            id: 'l15',
+            name: 'PARTIDO PATRIÓTICO DEL PERÚ',
+            initials: 'PPP',
+            logo: ''
+        },
+        {
+            id: 'l16',
+            name: 'FUERZA CIUDADANA',
+            initials: 'FC',
+            logo: ''
+        },
+        {
+            id: 'l17',
+            name: 'BATALLA PERÚ',
+            initials: 'BP',
+            logo: ''
+        },
+        {
+            id: 'l18',
+            name: 'AHORA NACIÓN - AN',
+            initials: 'AN',
+            logo: ''
+        },
+        {
+            id: 'l19',
+            name: 'PROGRESEMOS',
+            initials: 'PRO',
+            logo: ''
+        },
+        {
+            id: 'l20',
+            name: 'PARTIDO DEL BUEN GOBIERNO',
+            initials: 'PBG',
+            logo: ''
+        },
+        {
+            id: 'l21',
+            name: 'PARTIDO POLÍTICO PUEBLO CONSCIENTE',
+            initials: 'PPC',
+            logo: ''
+        },
+        {
+            id: 'l22',
+            name: 'PARTIDO DEMOCRÁTICO SOMOS PERÚ',
+            initials: 'SP',
+            logo: ''
+        },
+        {
+            id: 'l23',
+            name: 'PARTIDO APRISTA PERUANO',
+            initials: 'APRA',
+            logo: ''
+        },
+        {
+            id: 'l24',
+            name: 'PODEMOS PERÚ',
+            initials: 'PP',
+            logo: ''
+        },
+        {
+            id: 'l25',
+            name: 'ALIANZA ELECTORAL VENCEREMOS',
+            initials: 'AEV',
+            logo: ''
+        },
+        {
+            id: 'l26',
+            name: 'PARTIDO MORADO',
+            initials: 'PM',
+            logo: ''
+        },
+
+        // Categorías de votos
+        {
+            id: 'l27',
+            name: 'VOTOS EN BLANCO',
+            initials: 'VB',
+            logo: ''
+        },
+        {
+            id: 'l28',
+            name: 'VOTOS NULOS',
+            initials: 'VN',
+            logo: ''
+        },
+        {
+            id: 'l29',
+            name: 'VOTOS IMPUGNADOS',
+            initials: 'VI',
+            logo: ''
+        }
+    ];
 
         let votesComas = {};
         partidosComas.forEach(p => votesComas[p.id] = 0);
